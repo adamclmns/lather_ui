@@ -16,8 +16,8 @@ import subprocess
 import sys
 import os
 
-from lather_client import SudsClientWrapper
-from helpers import AbstractWindow, RedirectText
+from .lather_client import SudsClientWrapper
+from .helpers import AbstractWindow, RedirectText
 
 
 class XMLFormWindow(AbstractWindow):
