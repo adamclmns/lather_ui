@@ -1,5 +1,6 @@
 # Written with suds-py3 and python 3.6.1
 from suds.client import Client
+import suds
 
 import datetime
 
@@ -31,13 +32,55 @@ class ConfigurationPersistence():
     def __init__(self):
         pass
 
+class SudsClientExtension(Client):
+    """
+    Adding a few things and changing a few things for the __str__ method to make the UI easier to build
+    """
+    def to_dict(self):
+        s = ['\n']
+        for sd in self.sd:
+            text = self.get_sd_description(sd)
+            s.append('\n\n%s' %text)
+        return str(text)
+
+    @staticmethod
+    def get_sd_description(sd):
+        # Yanking out of the ServiceDefinition class within Suds, will re-work this to produce the dictionary
+        # object I need for auto-discovery in the UI
+        """
+        Get a textual description of the service for which this object
+        represents.
+        @return: A textual description.
+        @rtype: str
+        """
+        result = {}
+        service_name = sd.service.name + " " + sd.wsdl.tns[1]
+        result[service_name] = {}
+        result[service_name]['prefixes'] = []
+        for p in sd.prefixes:
+            result[service_name]['prefixes'].append('%s = "%s"' % p)
+        result[service_name]['ports'] = {}
+        for p in sd.ports:
+            port = p[0].name
+            result[service_name]['ports'][port] = {}
+            result[service_name]['ports'][port]['methods']= {}
+            for m in p[1]:
+                result[service_name]['ports'][port]['methods'][m[0]] = []
+                for p in m[1]:
+                    result[service_name]['ports'][port]['methods'][m[0]].append(sd.xlate(p[1]) + " " + p[0])
+            result[service_name]['ports'][port]['types'] = []
+            for t in sd.types:
+                result[service_name]['ports'][port]['types'].apped(sd.xlate(t[0]))
+        return result
+
+
 class SudsClientWrapper():
     def __init__(self, wsdl_url, custom_headers=None):
-        self._client = Client(wsdl_url, headers=custom_headers)
+        self._client = SudsClientExtension(wsdl_url, headers=custom_headers)
         self._interface = str(self._client)
-        print(self._client)
         self.interfaceDetails = self.buildMethodDetails(self.enumerateMethods())
-
+        self.auto_discovered_services = self._client.to_dict()
+        print(self.auto_discovered_services)
     def enumerateMethods(self):
         functions = [m for m in self._client.wsdl.services[0].ports[0].methods]
         return functions
@@ -72,6 +115,7 @@ class SudsClientWrapper():
                             param = param.rstrip(" ")
                             param_type, param_name = param.split(' ')
                             methodDetails[f]['params'].append((param_type, param_name))
+        print(methodDetails)
         return methodDetails
 
     def parseInterfaceDetails(self):
@@ -81,6 +125,7 @@ class SudsClientWrapper():
 
     def getMethodSignature(self, name):
         method_signature = self.interfaceDetails[name]
+        print(method_signature)
         return method_signature
 
     def getXMLRequest(self):

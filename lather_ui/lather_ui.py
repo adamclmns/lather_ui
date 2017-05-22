@@ -162,7 +162,7 @@ class mainWindow(AbstractWindow):
         self.soap_client = SudsClientWrapper(url)
         self.build_operation_buttons()
         # FOR DEBUGGING PURPOSES ONLY # TODO: Remove This
-        print(self.soap_client.client)
+        print(self.soap_client._client)
 
     def build_operation_buttons(self):
         try:
