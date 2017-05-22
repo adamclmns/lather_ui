@@ -193,9 +193,13 @@ class mainWindow(AbstractWindow):
         self.re_right.write(str(self.soap_client.getXMLResponse()))
 
 
-if __name__ == '__main__':
+def main()
     # Initialize the Application and UI Window
     # TODO: Move Frame creation to AbstractWindow class so each child of AbstractWindow is a top-level
     mainWindowInstance = mainWindow(Tkinter.Tk())
     mainWindowInstance.root.title("SUDS UI v0.0.01-SNAPSHOT - SoapUI Alternative in Python/Legacy Python")
     mainWindowInstance.root.mainloop()
+
+
+if __name__ == '__main__':
+    main()
