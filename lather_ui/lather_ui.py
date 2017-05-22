@@ -1,3 +1,5 @@
+from __future__ import unicode_literals, print_function, division, absolute_import
+
 # Tkinter has different import names on different versions.
 try:
     # Python2.7 imports
@@ -9,9 +11,14 @@ try:
 except ImportError:
     # Python 3.6 imports
     import tkinter as Tkinter
-    from tkinter import filedialog as tkFileDialog, messagebox as tkMessageBox, constants as Tkconstants, \
-        scrolledtext as ScrolledText
+    from tkinter import (
+        filedialog as tkFileDialog,
+        messagebox as tkMessageBox,
+        constants as Tkconstants,
+        scrolledtext as ScrolledText,
+    )
 
+import logging
 import subprocess
 import sys
 import os
@@ -43,7 +50,10 @@ class XMLFormWindow(AbstractWindow):
                 self.param_stringVars[param_key] = Tkinter.StringVar()
                 Tkinter.Entry(frame, textvariable=self.param_stringVars[param_key], width=60).pack()
             else:
-                Tkinter.Label(frame, text="This is a complex element... not yet supported. type is %s" %param_key).pack()
+                Tkinter.Label(
+                    frame,
+                    text="This is a complex element... not yet supported. type is {}".format(param_key)
+                ).pack()
             frame.pack()
 
         Tkinter.Button(frame, text="SUBMIT", command=self.submitForm).pack()
@@ -162,7 +172,7 @@ class mainWindow(AbstractWindow):
         self.soap_client = SudsClientWrapper(url)
         self.build_operation_buttons()
         # FOR DEBUGGING PURPOSES ONLY # TODO: Remove This
-        print(self.soap_client.client)
+        logging.critical(str(self.soap_client.client))
 
     def build_operation_buttons(self):
         try:
@@ -174,9 +184,9 @@ class mainWindow(AbstractWindow):
             disposableFrame.pack(side="left", fill="y")
             methods = self.soap_client.enumerateMethods()
             for m in methods:
-                button = Tkinter.Button(self.disposableFrame, text=m, command=lambda: self.createMessage(m)).pack()
-        except:
-            print("ERROR in build_operation_buttons")
+                Tkinter.Button(self.disposableFrame, text=m, command=lambda: self.createMessage(m)).pack()
+        except Exception:
+            logging.exception('ERROR in build_operation_buttons')
 
     def createMessage(self, m):
         sig = self.soap_client.getMethodSignature(m)
@@ -188,7 +198,7 @@ class mainWindow(AbstractWindow):
         try:
             self.soap_client.sendCall(method, parameters)
         except Exception:
-            print(Exception)
+            logging.exception()
         self.re_left.write(str(self.soap_client.getXMLRequest()))
         self.re_right.write(str(self.soap_client.getXMLResponse()))
 
