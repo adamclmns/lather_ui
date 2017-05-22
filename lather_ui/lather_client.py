@@ -37,11 +37,9 @@ class SudsClientExtension(Client):
     Adding a few things and changing a few things for the __str__ method to make the UI easier to build
     """
     def to_dict(self):
-        s = ['\n']
         for sd in self.sd:
-            text = self.get_sd_description(sd)
-            s.append('\n\n%s' %text)
-        return str(text)
+            dict = self.get_sd_description(sd)
+        return dict
 
     @staticmethod
     def get_sd_description(sd):
@@ -80,7 +78,8 @@ class SudsClientWrapper():
         self._interface = str(self._client)
         self.interfaceDetails = self.buildMethodDetails(self.enumerateMethods())
         self.auto_discovered_services = self._client.to_dict()
-        print(self.auto_discovered_services)
+
+
     def enumerateMethods(self):
         functions = [m for m in self._client.wsdl.services[0].ports[0].methods]
         return functions
@@ -113,20 +112,24 @@ class SudsClientWrapper():
                         if ")" not in param:
                             param = param.lstrip(" ")
                             param = param.rstrip(" ")
-                            param_type, param_name = param.split(' ')
-                            methodDetails[f]['params'].append((param_type, param_name))
-        print(methodDetails)
+                            methodDetails[f]['params'].append(param)
         return methodDetails
 
-    def parseInterfaceDetails(self):
-        """ Parses the suds client string to generate forms, buttons, and other useful stuff. """
-        interfacedetails = {}
-
-
-    def getMethodSignature(self, name):
+    def getMethodSignature2(self, name):
         method_signature = self.interfaceDetails[name]
+        print("METHOD SIGNATURE DICT ", end=" - ")
         print(method_signature)
         return method_signature
+
+    def getMethodSignature(self, service, port, method):
+        method_details = self.auto_discovered_services[service]['ports'][port]['methods'][method]
+        method_signature = {}
+        method_signature['signature'] = method
+        method_signature['params'] = [p for p in method_details]
+        print(method_signature)
+        return method_signature
+
+
 
     def getXMLRequest(self):
         return self._client.last_sent()

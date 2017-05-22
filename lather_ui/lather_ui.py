@@ -34,15 +34,17 @@ class XMLFormWindow(AbstractWindow):
     def buildForm(self, method_signature):
         method_params = method_signature['params']
         self.method_signature = method_signature
-
+        print("BUILDING FORM....", end="")
+        print(method_signature)
         frame = Tkinter.Frame(self.root)
-        for param in method_params:
-            param_key = param[0] + ' ' + param[1]
+        for param_key in method_params:
+            param = param_key.split(' ')
             if param[0].split(':')[0] == "xs":
                 Tkinter.Label(frame, text=param_key).pack()
                 self.param_stringVars[param_key] = Tkinter.StringVar()
                 Tkinter.Entry(frame, textvariable=self.param_stringVars[param_key], width=60).pack()
             else:
+                print(param)
                 Tkinter.Label(frame, text="This is a complex element... not yet supported. type is %s" %param_key).pack()
             frame.pack()
 
@@ -161,25 +163,34 @@ class mainWindow(AbstractWindow):
         url = self.current_url.get()
         self.soap_client = SudsClientWrapper(url)
         self.build_operation_buttons()
-        # FOR DEBUGGING PURPOSES ONLY # TODO: Remove This
-        print(self.soap_client._client)
 
     def build_operation_buttons(self):
-        try:
-            self.disposableFrame.destroy()
-            # This is actually legit...
-            self.disposableFrame = disposableFrame = Tkinter.Frame(self.buttonFrame)
-            self.generate_Type_lbl = Tkinter.Label(disposableFrame, text="GENERATE TYPES:")
-            self.generate_Type_lbl.pack()
-            disposableFrame.pack(side="left", fill="y")
-            methods = self.soap_client.enumerateMethods()
-            for m in methods:
-                button = Tkinter.Button(self.disposableFrame, text=m, command=lambda: self.createMessage(m)).pack()
-        except:
-            print("ERROR in build_operation_buttons")
 
-    def createMessage(self, m):
-        sig = self.soap_client.getMethodSignature(m)
+        self.disposableFrame.destroy()
+        # This is actually legit...
+        self.disposableFrame = disposableFrame = Tkinter.Frame(self.buttonFrame)
+        self.generate_Type_lbl = Tkinter.Label(disposableFrame, text="GENERATE TYPES:")
+        self.generate_Type_lbl.pack()
+        disposableFrame.pack(side="left", fill="y")
+        services = self.soap_client.auto_discovered_services
+        print(services)
+        for s in services.keys():
+            Tkinter.Label(disposableFrame, text=s).pack()
+            for p in services[s]['ports'].keys():
+                Tkinter.Label(disposableFrame, text=p).pack()
+                for m in services[s]['ports'][p]['methods'].keys():
+                    print("Creating button with parameters for createMessage: ", end="")
+                    print(s,p,m)
+                    Tkinter.Button(self.disposableFrame, text=m, command= lambda: s, p, m: self.createMessage(s,p,m)).pack()# THIS LINE NEEDS HELP!
+
+
+    def createMessage(self, s, p, m):
+        print("Requesting: ", end="")
+        print(s,p,m)
+        sig = self.soap_client.getMethodSignature2(m)
+
+        # sig = self.soap_client.getMethodSignature(s, p, m)
+
         form = XMLFormWindow(self.XMLFormCallback, m)
         form.buildForm(sig)
         form.root.mainloop()
