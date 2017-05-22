@@ -19,7 +19,7 @@ setup(
     packages=find_packages('.', exclude=['docs', 'tests']),
     entry_points={
         'gui_scripts': [
-            'LatherUI=lather_ui.lather_ui:main'
+            'LatherUI=lather_ui.__main__:main'
         ]
     },
     install_requires=requirements,
