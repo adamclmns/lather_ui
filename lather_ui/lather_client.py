@@ -121,7 +121,7 @@ if __name__ == '__main__':
     url = 'http://www.webservicex.com/globalweather.asmx?WSDL'
     soap_client = SudsClientWrapper(url)
     method_name = 'some method name'
-    method = getattr(soap_client.client.service, method_name)
+    method = getattr(soap_client._client.service, method_name)
     method_signature = soap_client.interfaceDetails[method_name]['signature']
     method_params = soap_client.interfaceDetails[method_name]['params']
 
