@@ -180,20 +180,21 @@ class mainWindow(AbstractWindow):
                 Tkinter.Label(disposableFrame, text=p).pack()
                 for m in services[s]['ports'][p]['methods'].keys():
                     print("Creating button with parameters for createMessage: ", end="")
-                    print(s,p,m)
-                    Tkinter.Button(self.disposableFrame, text=m, command= lambda: s, p, m: self.createMessage(s,p,m)).pack()# THIS LINE NEEDS HELP!
+                    print(s, p, m)
+                    Tkinter.Button(self.disposableFrame, text=m, command=self.mk_button_callback(s, p, m)).pack()# THIS LINE NEEDS HELP!
 
+    def mk_button_callback(self, s, p, m):
+        def createMessage():
+            print("Requesting: ", end="")
+            print(s,p,m)
+            #sig = self.soap_client.getMethodSignature2(m)
 
-    def createMessage(self, s, p, m):
-        print("Requesting: ", end="")
-        print(s,p,m)
-        sig = self.soap_client.getMethodSignature2(m)
+            sig = self.soap_client.getMethodSignature(s, p, m)
 
-        # sig = self.soap_client.getMethodSignature(s, p, m)
-
-        form = XMLFormWindow(self.XMLFormCallback, m)
-        form.buildForm(sig)
-        form.root.mainloop()
+            form = XMLFormWindow(self.XMLFormCallback, m)
+            form.buildForm(sig)
+            form.root.mainloop()
+        return createMessage
 
     def XMLFormCallback(self, method, parameters):
         try:
