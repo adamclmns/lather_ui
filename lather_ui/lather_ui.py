@@ -1,3 +1,5 @@
+from __future__ import unicode_literals, print_function, division, absolute_import
+
 # Tkinter has different import names on different versions.
 try:
     # Python2.7 imports
@@ -9,9 +11,14 @@ try:
 except ImportError:
     # Python 3.6 imports
     import tkinter as Tkinter
-    from tkinter import filedialog as tkFileDialog, messagebox as tkMessageBox, constants as Tkconstants, \
-        scrolledtext as ScrolledText
+    from tkinter import (
+        filedialog as tkFileDialog,
+        messagebox as tkMessageBox,
+        constants as Tkconstants,
+        scrolledtext as ScrolledText,
+    )
 
+import logging
 import subprocess
 import sys
 import os
@@ -44,8 +51,10 @@ class XMLFormWindow(AbstractWindow):
                 self.param_stringVars[param_key] = Tkinter.StringVar()
                 Tkinter.Entry(frame, textvariable=self.param_stringVars[param_key], width=60).pack()
             else:
-                print(param)
-                Tkinter.Label(frame, text="This is a complex element... not yet supported. type is %s" %param_key).pack()
+                Tkinter.Label(
+                    frame,
+                    text="This is a complex element... not yet supported. type is {}".format(param_key)
+                ).pack()
             frame.pack()
 
         Tkinter.Button(frame, text="SUBMIT", command=self.submitForm).pack()
@@ -200,7 +209,7 @@ class mainWindow(AbstractWindow):
         try:
             self.soap_client.sendCall(method, parameters)
         except Exception:
-            print(Exception)
+            logging.exception()
         self.re_left.write(str(self.soap_client.getXMLRequest()))
         self.re_right.write(str(self.soap_client.getXMLResponse()))
 

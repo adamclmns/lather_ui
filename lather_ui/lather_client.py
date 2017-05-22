@@ -6,8 +6,7 @@ import datetime
 
 try:
     from urllib.parse import urlparse
-
-except:
+except ImportError:
     from urlparse import urlparse
 
 
@@ -21,6 +20,7 @@ logging.getLogger('suds.xsd.schema').setLevel(logging.DEBUG)
 logging.getLogger('suds.wsdl').setLevel(logging.DEBUG)
 """
 
+
 class ConfigurationPersistence():
     """
     This is a class for writing and reading configuration files for persistent settings.
@@ -29,6 +29,7 @@ class ConfigurationPersistence():
 
     This will also have a few boolean values for "does exist" to trigger certain logic in the UI
     """
+
     def __init__(self):
         pass
 
@@ -71,7 +72,6 @@ class SudsClientExtension(Client):
                 result[service_name]['ports'][port]['types'].apped(sd.xlate(t[0]))
         return result
 
-
 class SudsClientWrapper():
     def __init__(self, wsdl_url, custom_headers=None):
         self._client = SudsClientExtension(wsdl_url, headers=custom_headers)
@@ -85,8 +85,7 @@ class SudsClientWrapper():
         return functions
 
     def getParamType(self, param):
-        param_name = param[1]
-        param_type = param[0]
+        param_type, param_name = param[:2]
         if param_type.split(':')[0] is not "xs":
             print(param_type)
 
@@ -101,7 +100,7 @@ class SudsClientWrapper():
         for f in functions:
             methodDetails[f] = {}
             for line in lines:
-                if (f+'(') in line:
+                if (f + '(') in line:
                     line = line.rstrip(" ")
                     line = line.lstrip(" ")
                     methodDetails[f]['signature'] = line
@@ -164,6 +163,7 @@ class SudsClientWrapper():
         print("  --  Response XML  --  ")
         print(self.getXMLResponse())
 
+
 if __name__ == '__main__':
     # This service has multiple ports... further debugging and adjustment needed in building method_details
     url = 'http://www.webservicex.com/globalweather.asmx?WSDL'
@@ -175,7 +175,7 @@ if __name__ == '__main__':
 
     call_params = {}
     for param in method_params:
-        param_value = input("%s :  " %(param[1]))
+        param_value = input("%s :  " % (param[1]))
         if param[0] == "xs:date":
             split_date = param_value.split('-')
             print(split_date)
@@ -187,7 +187,7 @@ if __name__ == '__main__':
     soap_client.showXMLInAndOut()
 
 """
-    Available URLs for Testing 
+    Available URLs for Testing
 
     http://www.webservicex.com/stockquote.asmx?WSDL
 
@@ -195,5 +195,4 @@ if __name__ == '__main__':
 
     http://www2.soriana.com/integracion/recibecfd/wseDocRecibo.asmx?wsdl
 
-    
 """
