@@ -193,7 +193,7 @@ class mainWindow(AbstractWindow):
         self.re_right.write(str(self.soap_client.getXMLResponse()))
 
 
-def main()
+def main():
     # Initialize the Application and UI Window
     # TODO: Move Frame creation to AbstractWindow class so each child of AbstractWindow is a top-level
     mainWindowInstance = mainWindow(Tkinter.Tk())
