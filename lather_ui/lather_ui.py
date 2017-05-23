@@ -190,7 +190,11 @@ class mainWindow(AbstractWindow):
                 for m in services[s]['ports'][p]['methods'].keys():
                     print("Creating button with parameters for createMessage: ", end="")
                     print(s, p, m)
-                    Tkinter.Button(self.disposableFrame, text=m, command=self.mk_button_callback(s, p, m)).pack()# THIS LINE NEEDS HELP!
+                    Tkinter.Button(
+                        self.disposableFrame,
+                        text=m,
+                        command=self.mk_button_callback(s, p, m)
+                    ).pack()
 
     def mk_button_callback(self, s, p, m):
         def createMessage():
