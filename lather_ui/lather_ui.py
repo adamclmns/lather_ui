@@ -199,8 +199,8 @@ class mainWindow(AbstractWindow):
     def mk_button_callback(self, s, p, m):
         def createMessage():
             print("Requesting: ", end="")
-            print(s,p,m)
-            #sig = self.soap_client.getMethodSignature2(m)
+            print(s, p, m)
+            # sig = self.soap_client.getMethodSignature2(m)
 
             sig = self.soap_client.getMethodSignature(s, p, m)
 
