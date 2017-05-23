@@ -83,9 +83,9 @@ class XMLFormWindow(AbstractWindow):
 
 
 class mainWindow(AbstractWindow):
-    def __init__(self, root):
+    def __init__(self, root=None):
         self.soap_client = None
-        self.root = root
+        self.root = root or Tkinter.Toplevel()
         self.file_opt = options = {}
         self.frame = Tkinter.Frame(self.root)
         self.frame.pack()
@@ -163,10 +163,15 @@ class mainWindow(AbstractWindow):
         # TODO: Register plugin menus
         # TODO: For each plugin, add the plugin submenu (if any)
         menubar.add_cascade(labe="Plugins", menu=plugin_menu)
-        root.config(menu=menubar)
+        self.root.config(menu=menubar)
 
         # Initialize the Terminal # TODO: Is this needed?
         self.process = subprocess.Popen("python --version", shell=True)
+
+        self.root.title("SUDS UI v0.0.01-SNAPSHOT - SoapUI Alternative in Python/Legacy Python")
+
+    def run(self):
+        self.root.mainloop()
 
     def get_wsdl(self):
         url = self.current_url.get()
@@ -219,11 +224,7 @@ class mainWindow(AbstractWindow):
 
 
 def main():
-    # Initialize the Application and UI Window
-    # TODO: Move Frame creation to AbstractWindow class so each child of AbstractWindow is a top-level
-    mainWindowInstance = mainWindow(Tkinter.Tk())
-    mainWindowInstance.root.title("SUDS UI v0.0.01-SNAPSHOT - SoapUI Alternative in Python/Legacy Python")
-    mainWindowInstance.root.mainloop()
+    mainWindow().run()
 
 
 if __name__ == '__main__':
