@@ -81,12 +81,12 @@ class XMLFormWindow(AbstractWindow):
         self.root.destroy()
 
 
-class mainWindow(AbstractWindow):
-    def __init__(self, root=None):
+class MainWindow(Tkinter.Tk):
+    def __init__(self):
+        super(MainWindow, self).__init__()
         self.soap_client = None
-        self.root = root or Tkinter.Toplevel()
         self.file_opt = options = {}
-        self.frame = Tkinter.Frame(self.root)
+        self.frame = Tkinter.Frame(self)
         self.frame.pack()
         self.frame.columnconfigure(0, weight=1)
         self.frame.rowconfigure(0, weight=1)
@@ -138,17 +138,17 @@ class mainWindow(AbstractWindow):
         # define options for opening or saving a file
         options['filetypes'] = [('all files', '.*'), ('text files', '.txt')]
         options['initialdir'] = os.getcwd()
-        options['parent'] = self.root
+        options['parent'] = self
         options['title'] = 'select a file: '
 
         # Define the Menu bar
-        menubar = Tkinter.Menu(self.frame)
+        menubar = Tkinter.Menu(self)
         filemenu = Tkinter.Menu(menubar, tearoff=0)
         filemenu.add_command(label="", command=self.hello)
         filemenu.add_command(label="Save", command=self.hello)
         filemenu.add_separator()
-        filemenu.add_command(label="Restart pyJmx", command=self.restart)
-        filemenu.add_command(label="Exit", command=self.root.quit)
+        # filemenu.add_command(label="Restart pyJmx", command=self.restart)
+        filemenu.add_command(label="Exit", command=self.quit)
         menubar.add_cascade(label="File", menu=filemenu)
         runMenu = Tkinter.Menu(menubar, tearoff=0)
         runMenu.add_command(label="Jmeter GUI", command=self.hello)
@@ -162,12 +162,15 @@ class mainWindow(AbstractWindow):
         # TODO: Register plugin menus
         # TODO: For each plugin, add the plugin submenu (if any)
         menubar.add_cascade(labe="Plugins", menu=plugin_menu)
-        self.root.config(menu=menubar)
+        self.config(menu=menubar)
 
-        self.root.title("SUDS UI v0.0.01-SNAPSHOT - SoapUI Alternative in Python/Legacy Python")
+        self.title("SUDS UI v0.0.01-SNAPSHOT - SoapUI Alternative in Python/Legacy Python")
+
+    def hello(self):
+        tkMessageBox.showinfo("INFO:", "This feature is not implemented yet")
 
     def run(self):
-        self.root.mainloop()
+        self.mainloop()
 
     def get_wsdl(self):
         url = self.current_url.get()
@@ -220,7 +223,7 @@ class mainWindow(AbstractWindow):
 
 
 def main():
-    mainWindow().run()
+    MainWindow().run()
 
 
 if __name__ == '__main__':
