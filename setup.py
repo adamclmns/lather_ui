@@ -24,4 +24,8 @@ setup(
     },
     install_requires=requirements,
     license='GPL',
+    classifiers=[
+        'Development Status :: 2 - Pre-Alpha',
+        'Programming Language :: Python :: 3'
+    ],
 )
