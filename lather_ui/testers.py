@@ -66,6 +66,7 @@ parents[0] = result
 last_parent = None
 
 for l in string_to_parse.split('\n'):  # for l in f.xreadlines():
+<<<<<<< 2bbf46305a1c7a8df37b0b8e9620aa98c9237938
     (line, level) = parse(l)  # create parse to return character and indentation
     print("____________________________________")
     print(line)
@@ -76,5 +77,31 @@ for l in string_to_parse.split('\n'):  # for l in f.xreadlines():
 
 
 print("DONE")
+=======
+    (c, i) = parse(l)  # create parse to return character and indentation
+
+    # Sometimes, the data is already indented by a certain amount... we need to
+    # know that the first line we read is the root
+    if last_indentation is None:
+        last_indentation = i  # We also want to skip the first line, because it's the SUDS version and build string
+    elif i == last_indentation:
+        # What's our indentation step?
+        dif = abs(i - last_indentation)
+        # sibling to last
+
+        new_el = {}
+        parents[i - dif][c] = new_el
+        parents[i] = new_el
+        last_indentation = i
+    elif i > last_indentation:
+        # child of last element... last element must be parent
+        dif = abs(i=last_indentation)
+        new_el = c
+        parents[i - c]
+        pass
+    else:
+        # end of children, back to a higher level
+        pass
+>>>>>>> Minor style cleanup
 
 print(result)

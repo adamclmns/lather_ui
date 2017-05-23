@@ -1,3 +1,5 @@
+from __future__ import unicode_literals, print_function, division, absolute_import
+
 # Tkinter has different import names on different versions.
 try:
     # Python2.7 imports
@@ -9,10 +11,14 @@ try:
 except ImportError:
     # Python 3.6 imports
     import tkinter as Tkinter
-    from tkinter import filedialog as tkFileDialog, messagebox as tkMessageBox, constants as Tkconstants, \
-        scrolledtext as ScrolledText
+    from tkinter import (
+        filedialog as tkFileDialog,
+        messagebox as tkMessageBox,
+        constants as Tkconstants,
+        scrolledtext as ScrolledText,
+    )
 
-import subprocess
+import logging
 import sys
 import os
 
@@ -44,8 +50,10 @@ class XMLFormWindow(AbstractWindow):
                 self.param_stringVars[param_key] = Tkinter.StringVar()
                 Tkinter.Entry(frame, textvariable=self.param_stringVars[param_key], width=60).pack()
             else:
-                print(param)
-                Tkinter.Label(frame, text="This is a complex element... not yet supported. type is %s" %param_key).pack()
+                Tkinter.Label(
+                    frame,
+                    text="This is a complex element... not yet supported. type is {}".format(param_key)
+                ).pack()
             frame.pack()
 
         Tkinter.Button(frame, text="SUBMIT", command=self.submitForm).pack()
@@ -73,12 +81,12 @@ class XMLFormWindow(AbstractWindow):
         self.root.destroy()
 
 
-class mainWindow(AbstractWindow):
-    def __init__(self, root):
+class MainWindow(Tkinter.Tk):
+    def __init__(self):
+        super(MainWindow, self).__init__()
         self.soap_client = None
-        self.root = root
         self.file_opt = options = {}
-        self.frame = Tkinter.Frame(self.root)
+        self.frame = Tkinter.Frame(self)
         self.frame.pack()
         self.frame.columnconfigure(0, weight=1)
         self.frame.rowconfigure(0, weight=1)
@@ -130,17 +138,17 @@ class mainWindow(AbstractWindow):
         # define options for opening or saving a file
         options['filetypes'] = [('all files', '.*'), ('text files', '.txt')]
         options['initialdir'] = os.getcwd()
-        options['parent'] = self.root
+        options['parent'] = self
         options['title'] = 'select a file: '
 
         # Define the Menu bar
-        menubar = Tkinter.Menu(self.frame)
+        menubar = Tkinter.Menu(self)
         filemenu = Tkinter.Menu(menubar, tearoff=0)
         filemenu.add_command(label="", command=self.hello)
         filemenu.add_command(label="Save", command=self.hello)
         filemenu.add_separator()
-        filemenu.add_command(label="Restart pyJmx", command=self.restart)
-        filemenu.add_command(label="Exit", command=self.root.quit)
+        # filemenu.add_command(label="Restart pyJmx", command=self.restart)
+        filemenu.add_command(label="Exit", command=self.quit)
         menubar.add_cascade(label="File", menu=filemenu)
         runMenu = Tkinter.Menu(menubar, tearoff=0)
         runMenu.add_command(label="Jmeter GUI", command=self.hello)
@@ -154,10 +162,15 @@ class mainWindow(AbstractWindow):
         # TODO: Register plugin menus
         # TODO: For each plugin, add the plugin submenu (if any)
         menubar.add_cascade(labe="Plugins", menu=plugin_menu)
-        root.config(menu=menubar)
+        self.config(menu=menubar)
 
-        # Initialize the Terminal # TODO: Is this needed?
-        self.process = subprocess.Popen("python --version", shell=True)
+        self.title("SUDS UI v0.0.01-SNAPSHOT - SoapUI Alternative in Python/Legacy Python")
+
+    def hello(self):
+        tkMessageBox.showinfo("INFO:", "This feature is not implemented yet")
+
+    def run(self):
+        self.mainloop()
 
     def get_wsdl(self):
         url = self.current_url.get()
@@ -181,13 +194,17 @@ class mainWindow(AbstractWindow):
                 for m in services[s]['ports'][p]['methods'].keys():
                     print("Creating button with parameters for createMessage: ", end="")
                     print(s, p, m)
-                    Tkinter.Button(self.disposableFrame, text=m, command=self.mk_button_callback(s, p, m)).pack()# THIS LINE NEEDS HELP!
+                    Tkinter.Button(
+                        self.disposableFrame,
+                        text=m,
+                        command=self.mk_button_callback(s, p, m)
+                    ).pack()
 
     def mk_button_callback(self, s, p, m):
         def createMessage():
             print("Requesting: ", end="")
-            print(s,p,m)
-            #sig = self.soap_client.getMethodSignature2(m)
+            print(s, p, m)
+            # sig = self.soap_client.getMethodSignature2(m)
 
             sig = self.soap_client.getMethodSignature(s, p, m)
 
@@ -200,17 +217,13 @@ class mainWindow(AbstractWindow):
         try:
             self.soap_client.sendCall(method, parameters)
         except Exception:
-            print(Exception)
+            logging.exception()
         self.re_left.write(str(self.soap_client.getXMLRequest()))
         self.re_right.write(str(self.soap_client.getXMLResponse()))
 
 
 def main():
-    # Initialize the Application and UI Window
-    # TODO: Move Frame creation to AbstractWindow class so each child of AbstractWindow is a top-level
-    mainWindowInstance = mainWindow(Tkinter.Tk())
-    mainWindowInstance.root.title("SUDS UI v0.0.01-SNAPSHOT - SoapUI Alternative in Python/Legacy Python")
-    mainWindowInstance.root.mainloop()
+    MainWindow().run()
 
 
 if __name__ == '__main__':
