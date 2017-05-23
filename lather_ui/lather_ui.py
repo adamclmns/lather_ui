@@ -165,9 +165,6 @@ class mainWindow(AbstractWindow):
         menubar.add_cascade(labe="Plugins", menu=plugin_menu)
         self.root.config(menu=menubar)
 
-        # Initialize the Terminal # TODO: Is this needed?
-        self.process = subprocess.Popen("python --version", shell=True)
-
         self.root.title("SUDS UI v0.0.01-SNAPSHOT - SoapUI Alternative in Python/Legacy Python")
 
     def run(self):
