@@ -26,6 +26,11 @@ setup(
     license='GPL',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
-        'Programming Language :: Python :: 3'
+        'Programming Language :: Python :: 3',
+        'Natural Language :: English',
+        'Operating System :: Microsoft :: Windows :: Windows 10',
+        'Topic :: Software Development :: Testing',
+        'Topic :: Utilities'
+
     ],
 )
