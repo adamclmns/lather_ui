@@ -73,12 +73,13 @@ class AbstractLatherPlugin():
             with open(self._config_file_path) as config:
                 config.write(json.dumps(config_to_write))
             return True
-        except:
+        except Exception as ex:
+            print(ex)
             return False
 
 class SimpleHTTPHeaderPlugin(AbstractLatherPlugin):
     def __init__(self):
-        # Build the plugin object, and implement the methods you need.... ignore the ones you don't. 
+        # Build the plugin object, and implement the methods you need.... ignore the ones you don't.
         _name = "HTTTP-Header-Plugin"
         AbstractLatherPlugin.__init__(self, _name)
         self._config_properties = ["Http-Headers"]

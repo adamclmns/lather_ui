@@ -216,8 +216,8 @@ class MainWindow(Tkinter.Tk):
     def XMLFormCallback(self, method, parameters):
         try:
             self.soap_client.sendCall(method, parameters)
-        except Exception:
-            logging.exception()
+        except Exception as ex:
+            logging.exception(ex)
         self.re_left.write(str(self.soap_client.getXMLRequest()))
         self.re_right.write(str(self.soap_client.getXMLResponse()))
 
