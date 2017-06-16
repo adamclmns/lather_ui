@@ -20,7 +20,7 @@ import subprocess
 import shlex
 import sys
 import os
-from lxml import etree
+
 from threading import Thread
 # from Queue import Queue, Empty
 from time import sleep

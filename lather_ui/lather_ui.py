@@ -22,8 +22,14 @@ import logging
 import sys
 import os
 
-from .lather_client import SudsClientWrapper
-from .helpers import AbstractWindow, RedirectText
+try: #Getting wierd import errors on different PC's. Will workaround for now... #TODO:Fix This
+    from .lather_client import SudsClientWrapper
+    from .helpers import AbstractWindow, RedirectText
+except ImportError as ie:
+    print("oops - lather_ui line 29")
+    print(ie)
+    from . import lather_client
+
 
 
 class XMLFormWindow(AbstractWindow):
