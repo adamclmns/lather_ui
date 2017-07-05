@@ -150,7 +150,7 @@ class MainWindow(Tkinter.Tk):
         # Define the Menu bar
         menubar = Tkinter.Menu(self)
         filemenu = Tkinter.Menu(menubar, tearoff=0)
-        filemenu.add_command(label="", command=self.hello)
+        filemenu.add_command(label="BLANK", command=self.hello)
         filemenu.add_command(label="Save", command=self.hello)
         filemenu.add_separator()
         # filemenu.add_command(label="Restart pyJmx", command=self.restart)
@@ -160,7 +160,7 @@ class MainWindow(Tkinter.Tk):
         runMenu.add_command(label="Jmeter GUI", command=self.hello)
         runMenu.add_command(label="JMX Test via Console", command=self.hello)
         runMenu.add_command(label="run Selected JMX", command=self.hello)
-        menubar.add_cascade(label="Run...", menu=runMenu)
+        # menubar.add_cascade(label="Run...", menu=runMenu)
 
         plugin_menu = Tkinter.Menu(menubar, tearoff=0)
 
